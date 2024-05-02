@@ -2,8 +2,6 @@ package com.hiwuyue.eventbus.test.subscribes;
 
 import com.hiwuyue.eventbus.spring.starter.EventBusSubscribe;
 import com.hiwuyue.eventbus.test.Constants;
-import com.hiwuyue.eventbus.test.EventBusApplicationTest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component

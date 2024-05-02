@@ -2,6 +2,7 @@ package com.hiwuyue.eventbus.test;
 
 
 import com.hiwuyue.eventbus.core.EventBus;
+import com.hiwuyue.eventbus.core.impl.MemoryEventBus;
 import com.hiwuyue.eventbus.spring.starter.EnableEventBus;
 import com.hiwuyue.eventbus.spring.starter.EventBusConfiguration;
 import com.hiwuyue.eventbus.spring.starter.EventSubscribeScanner;
@@ -34,7 +35,7 @@ public class EventBusApplicationTest {
         EventBusConfiguration eventBusConfiguration = applicationContext.getBean(EventBusConfiguration.class);
         Assert.assertNotNull(eventBusConfiguration);
 
-        EventBus eventBus = applicationContext.getBean(EventBus.class);
+        EventBus eventBus = applicationContext.getBean(MemoryEventBus.class);
         Assert.assertNotNull(eventBus);
 
         EventSubscribeScanner eventSubscribeScanner = applicationContext.getBean(EventSubscribeScanner.class);
@@ -44,9 +45,9 @@ public class EventBusApplicationTest {
     }
 
     @Test
-    public void testSubscribe() {
+    public void testSubscribe() throws ReflectiveOperationException {
         MessageHolder messageHolder = applicationContext.getBean(MessageHolder.class);
-        EventBus eventBus = applicationContext.getBean(EventBus.class);
+        EventBus eventBus = applicationContext.getBean(MemoryEventBus.class);
 
         messageHolder.setMessage("");
         eventBus.publish(HelloSubscriber.class.getSimpleName(), messageHolder);

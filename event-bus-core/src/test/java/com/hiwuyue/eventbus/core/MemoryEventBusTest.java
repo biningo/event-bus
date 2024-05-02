@@ -1,13 +1,14 @@
 package com.hiwuyue.eventbus.core;
 
+import com.hiwuyue.eventbus.core.impl.MemoryEventBus;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class EventBusTest {
+public class MemoryEventBusTest {
 
     @Test
-    public void testCallbackSubscribe() {
-        EventBus bus = new EventBus();
+    public void testCallbackSubscribe() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
 
@@ -26,8 +27,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackSubscribeAsync() {
-        EventBus bus = new EventBus();
+    public void testCallbackSubscribeAsync() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
 
@@ -55,8 +56,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackSubscribeOnce() {
-        EventBus bus = new EventBus();
+    public void testCallbackSubscribeOnce() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
 
@@ -75,8 +76,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackSubscribeOnceAsync() {
-        EventBus bus = new EventBus();
+    public void testCallbackSubscribeOnceAsync() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
 
@@ -104,8 +105,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackClassSubscribe() {
-        EventBus bus = new EventBus();
+    public void testCallbackClassSubscribe() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         bus.subscribe(topic, CountCallback.class);
 
@@ -119,8 +120,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackClassSubscribeOnce() {
-        EventBus bus = new EventBus();
+    public void testCallbackClassSubscribeOnce() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
 
@@ -135,8 +136,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackClassSubscribeAsync() throws InterruptedException {
-        EventBus bus = new EventBus();
+    public void testCallbackClassSubscribeAsync() throws InterruptedException, ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         bus.subscribeAsync(topic, CountCallback.class);
 
@@ -151,8 +152,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackClassSubscribeOnceAsync() throws InterruptedException {
-        EventBus bus = new EventBus();
+    public void testCallbackClassSubscribeOnceAsync() throws InterruptedException, ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         bus.subscribeOnceAsync(topic, CountCallback.class);
 
@@ -167,8 +168,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackUnsubscribe() {
-        EventBus bus = new EventBus();
+    public void testCallbackUnsubscribe() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
         int targetCount = 0;
@@ -185,8 +186,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testCallbackClassUnsubscribe() {
-        EventBus bus = new EventBus();
+    public void testCallbackClassUnsubscribe() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
         int targetCount = 0;
@@ -202,8 +203,8 @@ public class EventBusTest {
     }
 
     @Test
-    public void testEventBusClear() {
-        EventBus bus = new EventBus();
+    public void testEventBusClear() throws ReflectiveOperationException {
+        EventBus bus = new MemoryEventBus();
         String topic = "test";
         CountHolder countHolder = new CountHolder();
         int targetCount = 0;
@@ -218,7 +219,6 @@ public class EventBusTest {
         bus.publish(topic);
         Assert.assertEquals(0, countHolder.getCount());
     }
-
 
     private static class CountCallback implements EventBusCallback {
         private final int count;
