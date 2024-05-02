@@ -4,16 +4,20 @@ import com.hiwuyue.eventbus.core.EventBus;
 import com.hiwuyue.eventbus.core.EventBusCallback;
 import com.hiwuyue.eventbus.core.EventBusHandler;
 import com.hiwuyue.eventbus.core.EventTopic;
+import com.hiwuyue.eventbus.core.PublishException;
+import com.hiwuyue.eventbus.core.impl.mq.Message;
+import com.hiwuyue.eventbus.core.impl.mq.MessageListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class MemoryEventBus implements EventBus {
-    private final Map<String, EventTopic> topics = new ConcurrentHashMap<>();
+    protected final Map<String, EventTopic> topicsTable = new ConcurrentHashMap<>();
 
     @Override
     public void asyncEventExecutor(String topic, ThreadPoolExecutor executor) {
@@ -22,11 +26,11 @@ public class MemoryEventBus implements EventBus {
     }
 
     @Override
-    public void publish(String topic, Object... args) {
-        if (!this.topics.containsKey(topic)) {
+    public void publish(String topic, Object... args) throws PublishException {
+        if (!this.topicsTable.containsKey(topic)) {
             return;
         }
-        this.topics.get(topic).handle(args);
+        this.topicsTable.get(topic).handle(args);
     }
 
     @Override
@@ -85,10 +89,10 @@ public class MemoryEventBus implements EventBus {
 
     @Override
     public void unSubscribe(String topic, Class<? extends EventBusCallback> callbackClass) {
-        if (!this.topics.containsKey(topic)) {
+        if (!this.topicsTable.containsKey(topic)) {
             return;
         }
-        List<EventBusHandler> handlers = this.topics.get(topic).getHandlers();
+        List<EventBusHandler> handlers = this.topicsTable.get(topic).getHandlers();
         List<EventBusHandler> handlersCopy = new ArrayList<>(handlers);
         for (EventBusHandler handler : handlersCopy) {
             if (handler.getEventBusCallbackClass().getName().equals(callbackClass.getName())) {
@@ -99,10 +103,10 @@ public class MemoryEventBus implements EventBus {
 
     @Override
     public void unSubscribe(String topic, EventBusCallback callback) {
-        if (!this.topics.containsKey(topic)) {
+        if (!this.topicsTable.containsKey(topic)) {
             return;
         }
-        List<EventBusHandler> handlers = this.topics.get(topic).getHandlers();
+        List<EventBusHandler> handlers = this.topicsTable.get(topic).getHandlers();
         List<EventBusHandler> handlersCopy = new ArrayList<>(handlers);
         for (EventBusHandler handler : handlersCopy) {
             if (handler.getCallback().hashCode() == callback.hashCode()) {
@@ -112,38 +116,38 @@ public class MemoryEventBus implements EventBus {
     }
 
     @Override
-    public List<String> topics() {
-        return new ArrayList<>(this.topics.keySet());
+    public Set<String> topics() {
+        return this.topicsTable.keySet();
     }
 
     @Override
     public void waitAsync(String topic) throws InterruptedException {
-        if (!this.topics.containsKey(topic)) {
+        if (!this.topicsTable.containsKey(topic)) {
             return;
         }
-        this.topics.get(topic).waitAsync();
+        this.topicsTable.get(topic).waitAsync();
     }
 
     @Override
     public void waitAsync(String topic, long timeout, TimeUnit timeUnit) throws InterruptedException {
-        if (!this.topics.containsKey(topic)) {
+        if (!this.topicsTable.containsKey(topic)) {
             return;
         }
-        this.topics.get(topic).waitAsync(timeout, timeUnit);
+        this.topicsTable.get(topic).waitAsync(timeout, timeUnit);
     }
 
     @Override
     public void clear() {
-        HashMap<String, EventTopic> topicsCopy = new HashMap<>(this.topics);
+        HashMap<String, EventTopic> topicsCopy = new HashMap<>(this.topicsTable);
         topicsCopy.forEach((topicName, eventTopic) -> {
             eventTopic.clear();
-            this.topics.remove(topicName);
+            this.topicsTable.remove(topicName);
         });
     }
 
     @Override
     public void clear(String topic) {
-        EventTopic eventTopic = this.topics.remove(topic);
+        EventTopic eventTopic = this.topicsTable.remove(topic);
         if (eventTopic != null) {
             eventTopic.clear();
         }
@@ -151,23 +155,23 @@ public class MemoryEventBus implements EventBus {
 
     @Override
     public void clearNow() {
-        HashMap<String, EventTopic> topicsCopy = new HashMap<>(this.topics);
+        HashMap<String, EventTopic> topicsCopy = new HashMap<>(this.topicsTable);
         topicsCopy.forEach((topicName, eventTopic) -> {
             eventTopic.clearNow();
-            this.topics.remove(topicName);
+            this.topicsTable.remove(topicName);
         });
     }
 
     @Override
     public void clearNow(String topic) {
-        EventTopic eventTopic = this.topics.remove(topic);
+        EventTopic eventTopic = this.topicsTable.remove(topic);
         if (eventTopic != null) {
             eventTopic.clearNow();
         }
     }
 
     private EventTopic getEventTopic(String topic) {
-        this.topics.putIfAbsent(topic, new EventTopic(topic));
-        return topics.get(topic);
+        this.topicsTable.putIfAbsent(topic, new EventTopic(topic));
+        return topicsTable.get(topic);
     }
 }

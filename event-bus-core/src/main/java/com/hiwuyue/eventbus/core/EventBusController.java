@@ -1,11 +1,12 @@
 package com.hiwuyue.eventbus.core;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public interface EventBusController {
-    List<String> topics();
+    Set<String> topics();
 
     void waitAsync(String topic) throws InterruptedException;
 
