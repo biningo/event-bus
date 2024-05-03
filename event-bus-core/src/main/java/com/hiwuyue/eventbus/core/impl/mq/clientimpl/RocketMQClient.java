@@ -11,8 +11,10 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,8 @@ public class RocketMQClient implements MQClient {
     public RocketMQClient(String namesrv) throws MQClientException {
         this.defaultMQPushConsumer = new DefaultMQPushConsumer(namesrv);
         this.defaultMQPushConsumer.setConsumerGroup(EVENT_BUS_CONSUMER_GROUP);
+        this.defaultMQPushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
+        this.defaultMQPushConsumer.setMessageModel(MessageModel.BROADCASTING);
         this.defaultMQPushConsumer.start();
 
         this.defaultMQProducer = new DefaultMQProducer(namesrv);
