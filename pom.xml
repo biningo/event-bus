@@ -28,6 +28,7 @@
         <spring-boot.version>2.7.9</spring-boot.version>
         <commons-lang3>3.12.0</commons-lang3>
         <fastjson.version>2.0.49</fastjson.version>
+        <rocketmq-client.version>4.9.8</rocketmq-client.version>
     </properties>
 
     <dependencyManagement>
@@ -68,6 +69,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq-client.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

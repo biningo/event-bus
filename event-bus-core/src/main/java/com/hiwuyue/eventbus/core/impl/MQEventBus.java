@@ -5,10 +5,11 @@ import com.hiwuyue.eventbus.core.EventBus;
 import com.hiwuyue.eventbus.core.EventBusCallback;
 import com.hiwuyue.eventbus.core.EventTopic;
 import com.hiwuyue.eventbus.core.PublishException;
+import com.hiwuyue.eventbus.core.impl.mq.ClientBuildException;
 import com.hiwuyue.eventbus.core.impl.mq.MQClient;
 import com.hiwuyue.eventbus.core.impl.mq.MQClientBuilder;
 import com.hiwuyue.eventbus.core.impl.mq.MQName;
-import com.hiwuyue.eventbus.core.impl.mq.Message;
+import com.hiwuyue.eventbus.core.impl.mq.EventMessage;
 import com.hiwuyue.eventbus.core.impl.mq.SendStatus;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class MQEventBus extends MemoryEventBus implements EventBus {
 
     private final MQClient mqClient;
 
-    public MQEventBus(MQName mqName) {
+    public MQEventBus(MQName mqName) throws ClientBuildException {
         this.mqClient = new MQClientBuilder(mqName).build();
     }
 
@@ -94,8 +95,8 @@ public class MQEventBus extends MemoryEventBus implements EventBus {
 
     @Override
     public void publish(String topic, Object... args) throws PublishException {
-        Message message = new Message(topic, JSON.toJSONString(args));
-        SendStatus status = this.mqClient.send(message);
+        EventMessage eventMessage = new EventMessage(topic, JSON.toJSONString(args));
+        SendStatus status = this.mqClient.send(eventMessage);
         if (status == SendStatus.FAIL) {
             throw new PublishException("send failed!");
         }

@@ -1,9 +1,9 @@
 package com.hiwuyue.eventbus.core.impl.mq;
 
 public interface MQClient {
-    SendStatus send(Message message);
+    SendStatus send(EventMessage eventMessage);
 
     void subscribe(String topic, MessageListener messageListener);
 
-    void unsubscribe(String... topic);
+    void unsubscribe(String... topics);
 }
